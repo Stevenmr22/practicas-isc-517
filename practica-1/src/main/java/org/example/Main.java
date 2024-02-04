@@ -72,11 +72,11 @@ public class Main {
                     String method = f.attr("method");
                     if (!method.equalsIgnoreCase("POST")) continue;
 
-                    Document respServer = Jsoup.connect(String.valueOf(url))
+                    Document serverResponse = Jsoup.connect(String.valueOf(url))
                             .data("asignatura", "practica1")
                             .header("matricula-id", "10147069")
                             .post();
-                    System.out.println("Respuesta del servidor: " + respServer.body().text());
+                    System.out.println("Respuesta del servidor: " + serverResponse.body().text());
                 }
                 System.out.println("Cantidad total de formularios: " + forms.size());
             }
