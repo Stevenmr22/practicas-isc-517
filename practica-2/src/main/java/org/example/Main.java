@@ -246,17 +246,11 @@ public class Main {
             EtiquetaController etiquetaController = EtiquetaController.getInstancia();
             List<Etiqueta> listaEtiquetas = etiquetaController.getListaEtiquetas();
             ctx.attribute("listaEtiquetas", listaEtiquetas);
-            List<Etiqueta> etilist = articulo.getEtiquetas();
-            System.out.println(etilist);
-            System.out.println(listaEtiquetas);
+            List<Etiqueta> etiquetasSeleccionadas = articulo.getEtiquetas();
             Set<Etiqueta> setExistentes = new HashSet<>(listaEtiquetas);
-            Set<Etiqueta> setElegidas = new HashSet<>(etilist);
+            Set<Etiqueta> setElegidas = new HashSet<>(etiquetasSeleccionadas);
             Set<Etiqueta> diferencia = new HashSet<>(setExistentes);
             diferencia.removeAll(setElegidas);
-            Iterator it = diferencia.iterator();
-            while(it.hasNext()){
-                System.out.println(it.next());
-            }
             ctx.attribute("etiquetas", diferencia);
 
             if (articulo != null) {
