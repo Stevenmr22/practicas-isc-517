@@ -1,10 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articulo - Mi Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-$END$
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/index">Mi Blog</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <!-- Verificar si hay un usuario autenticado -->
+                <th:block th:if="${session.usuario != null}">
+                    <!-- Mostrar el nombre de usuario y el botón para cerrar sesión -->
+                    <li class="nav-item">
+                        <span class="nav-link"><span th:text="${session.usuario.nombre}"></span></span>
+                    </li>
+                    <!-- Mostrar el botón de "Crear Usuario" solo para los administradores -->
+                    <li th:if="${session.usuario.administrator}" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Gestion de Usuarios
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/crearusuario">Crear Usuario</a></li>
+                            <li><a class="dropdown-item" href="/listarusuarios">Listar Usuarios</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Cerrar sesion</a>
+                    </li>
+                </th:block>
+                <!-- Si no hay usuario autenticado, mostrar el botón de iniciar sesión -->
+                <th:block th:unless="${session.usuario != null}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Iniciar sesion</a>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- Artículo completo -->
+        <div class="col-md-8 offset-md-2">
+            <!-- Contenido del artículo -->
+            <h2 th:text="${articulo.titulo}">Titulo del Articulo</h2>
+            <p th:text="${articulo.cuerpo}">Cuerpo del Articulo</p>
+            <p><small class="text-muted">Fecha de Creacion: <span th:text="${#dates.format(articulo.fecha, 'yyyy-MM-dd')}">Fecha</span></small></p>
+            <p class="card-text" th:text="'Creado por ' + ${articulo.autor.nombre}">Creado por Nombre del Autor</p>
+            <p><small class="text-muted">
+                <span th:each="etiqueta, iterStat : ${articulo.listaEtiquetas}">
+                    <span class="badge bg-secondary" th:text="${etiqueta.etiqueta}"></span>
+                    <span th:if="${!iterStat.last}">
+                        <span>,</span> <!-- Agrega una coma si no es la última etiqueta -->
+                    </span>
+                </span>
+            </small></p>
+            <a href="/index" class="btn btn-primary">Volver al Inicio</a>
+
+            <th:block th:if="${session.usuario.administrator || session.usuario.nombre == articulo.autor.nombre}">
+            <button class="btn btn-danger" type="button" th:attr="data-titulo=${articulo.id}" onclick="eliminarArticulo(this.getAttribute('data-titulo'))">Eliminar Articulo</button>
+            <a th:href="@{/editararticulo/{id}(id=${articulo.id})}" class="btn btn-warning">Modificar</a>
+            </th:block>
+
+            <h3>Agregar Comentario</h3>
+            <form id="comentarioForm" th:action="@{/articulo/comentario}" method="post">
+                <input type="hidden" name="articuloId" th:value="${articulo.id}">
+                <div class="mb-3">
+                    <label for="contenido" class="form-label">Contenido:</label>
+                    <textarea class="form-control" id="contenido" name="contenido" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Comentario</button>
+            </form>
+
+            <!-- Visualización de comentarios -->
+            <div class="mt-5">
+                <h3>Comentarios</h3>
+                <div th:if="${not #lists.isEmpty(articulo.listaComentarios)}">
+                    <div th:each="comentario : ${articulo.listaComentarios}">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${comentario.autor.nombre}">Nombre del Autor</h5>
+                                <p class="card-text" th:text="${comentario.comentario}">Contenido del Comentario</p>
+                                <!-- Botón de eliminar comentario -->
+                                <div th:if="${session.usuario != null}">
+                                    <button class="btn btn-danger" type="button" th:if="${session.usuario.administrator || session.usuario.nombre == articulo.autor.nombre}" th:attr="data-comentario=${comentario.id}, data-articulo=${articulo.id}" onclick="eliminarComentario(this.getAttribute('data-comentario'), this.getAttribute('data-articulo'))">Eliminar Comentario</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(articulo.listaComentarios)}">
+                    <p>No hay comentarios aun.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Footer -->
+<footer class="bg-light text-center py-4 mt-5">
+    <div class="container">
+        <p>2024 Mi Blog. Todos los derechos reservados.</p>
+    </div>
+</footer>
+<script>
+    function eliminarArticulo(articuloId) {
+        fetch('/articulo/' + articuloId, {
+            method: 'DELETE',
+        }).then(response => {
+            if (response.ok) {
+                // Redirige a la página de inicio si la eliminación fue exitosa
+                window.location.href = "/index";
+            } else {
+                console.error('Error al eliminar el artículo');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function eliminarComentario(comentarioId, articuloId) {
+        // Realiza una solicitud DELETE al servidor para eliminar el comentario
+        fetch('/articulo/' + articuloId + '/comentario/' + comentarioId, {
+            method: 'DELETE',
+        }).then(response => {
+            if (response.ok) {
+                // Recargar la página después de eliminar el comentario
+                location.reload();
+            } else {
+                console.error('Error al eliminar el comentario');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+</script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

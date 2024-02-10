@@ -1,10 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-$END$
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/index">Mi Blog</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse flex-row-reverse" id="navbarNav">
+            <ul class="navbar-nav d-flex">
+                <!-- Verificar si hay un usuario autenticado -->
+                <th:block th:if="${usuario != null}">
+                    <!-- Mostrar el nombre de usuario -->
+                    <li class="nav-item">
+                        <span class="nav-link">Bienvenido, <span th:text="${usuario.nombre}"></span></span>
+                    </li>
+                    <!-- Mostrar el botón para crear usuarios solo si el usuario es administrador -->
+                        <li th:if="${usuario.administrator}" class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Gestion de Usuarios
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/crearusuario">Crear Usuario</a></li>
+                                <li><a class="dropdown-item" href="/listarusuarios">Listar Usuarios</a></li>
+                            </ul>
+                        </li>
+                    <!-- Botón para crear artículo -->
+                    <li class="nav-item" th:if="${usuario.administrator || usuario.autor}">
+                        <a class="nav-link" href="/creararticulo">Crear Articulo</a>
+                    </li>
+
+                    <!-- Botón para cerrar sesión -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Cerrar sesion</a>
+                        </li>
+                </th:block>
+                <!-- Si no hay usuario autenticado, mostrar el botón de iniciar sesión -->
+                <th:block th:unless="${usuario != null}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Iniciar sesion</a>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- Blog Posts -->
+        <div class="col-md-9">
+            <h2>Ultimos Articulos</h2>
+            <!-- Iterar sobre la lista de artículos -->
+            <!-- Iterar sobre los artículos -->
+            <th:block th:each="articulo : ${articulos}">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${articulo.titulo}">Título del Artículo</h5>
+                        <!-- Mostrar el resumen del artículo -->
+                        <p class="card-text" th:text="${#strings.abbreviate(articulo.cuerpo, 70)}">Resumen del artículo</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <!-- Mostrar la fecha de creación -->
+                                Fecha de Creacion: <span th:text="${#dates.format(articulo.fecha, 'yyyy-MM-dd')}">Fecha</span>
+                                <!-- Mostrar el nombre del autor -->
+                                <p class="card-text" th:text="'Creado por ' + ${articulo.autor.nombre}">Creado por Nombre del Autor</p>
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <!-- Iterar sobre las etiquetas asociadas al artículo -->
+                                <th:block th:each="etiquetas : ${articulo.etiquetas}">
+                                    <!-- Envolver la etiqueta en un badge de Bootstrap -->
+                                    <span class="badge bg-secondary" th:text="${etiquetas.etiqueta}"></span>
+                                </th:block>
+                            </small>
+                        </p>
+                        <!-- Enlace para leer más -->
+                        <a th:href="@{'/articulo/' + ${articulo.id}}" class="btn btn-primary">Leer mas</a>
+                    </div>
+                </div>
+            </th:block>
+
+        </div>
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <h4>Etiquetas</h4>
+            <ul class="list-group">
+                <!-- Iterar sobre la lista de etiquetas -->
+                <th:block th:each="etiqueta : ${etiquetas}">
+                    <li class="list-group-item">
+                        <!-- Agregar la clase "badge bg-secondary" al elemento <span> -->
+                        <span class="badge bg-secondary" th:text="${etiqueta.etiqueta}">Etiqueta</span>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-light text-center py-4 mt-5">
+    <div class="container">
+        <p>2024 Mi Blog. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
