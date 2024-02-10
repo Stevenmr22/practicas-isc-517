@@ -11,8 +11,7 @@ public class LoginController {
     private List<Usuario> listaUsuarios = new ArrayList<>();
 
     private LoginController(){
-        listaUsuarios.add(new Usuario("Admin", "Juan", "1234", true, true));
-        listaUsuarios.add(new Usuario("User", "Pedro", "1234", false, true));
+        listaUsuarios.add(new Usuario("Admin", "Gustavo", "1234", true, true));
     }
     public static LoginController getInstancia(){
         if(instancia==null){

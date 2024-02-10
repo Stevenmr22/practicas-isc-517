@@ -10,10 +10,6 @@ public class EtiquetaController {
     private List<Etiqueta> listaEtiquetas = new ArrayList<>();
 
     private EtiquetaController() {
-        listaEtiquetas.add(new Etiqueta(1L, "Deportes"));
-        listaEtiquetas.add(new Etiqueta(2L, "Cine"));
-        listaEtiquetas.add(new Etiqueta(3L, "Tecnologia"));
-        listaEtiquetas.add(new Etiqueta(4L, "Musica"));
     }
 
     public static EtiquetaController getInstancia(){
