@@ -31,12 +31,17 @@ public class Main {
     });
 
     app.get("/" , ctx -> {
-        ctx.render("/public/index.html");
+        ctx.render("/views/index.html");
     });
 
     app.get("/login", ctx -> {
-        ctx.render("/public/login.html");
+        if (ctx.cookie("usuario") != null) {
+            ctx.redirect("/");
+        } else {
+            ctx.render("/views/login.html");
+        }
     });
+
 
     app.post("/login", ctx -> {
         String usuario = ctx.formParam("usuario");
@@ -50,9 +55,6 @@ public class Main {
         }
     });
 
-    app.after("/", ctx -> {
-        ctx.removeCookie("usuario");
-    });
     }
 
 }

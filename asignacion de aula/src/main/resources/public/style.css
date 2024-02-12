@@ -2,7 +2,9 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 50px;
 }
 
 h2 {
@@ -50,4 +52,12 @@ button[type="submit"]:hover {
 .error-message {
     color: #dc3545;
     margin-top: 5px;
+}
+
+h1 {
+    color: #333;
+}
+p {
+    color: #666;
+    margin-top: 20px;
 }
