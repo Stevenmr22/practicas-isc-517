@@ -22,13 +22,6 @@ public class Main {
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {
-            config.staticFiles.add(staticFileConfig -> {
-                staticFileConfig.hostedPath = "/";
-                staticFileConfig.directory = "/publico";
-                staticFileConfig.location = Location.CLASSPATH;
-                staticFileConfig.precompress=false;
-                staticFileConfig.aliasCheck=null;
-            });
 
         }).start(7000);
         app.get("/login", ctx -> {ctx.render("/thymeleaf/login.html");});
