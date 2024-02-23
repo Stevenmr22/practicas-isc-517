@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>B L O G</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">B L O G</a>
+
+        <!-- Botones a la derecha -->
+        <div class="navbar-nav ms-auto">
+            <!-- Botón de login -->
+            <div th:if="${username} == null">
+                <a class="nav-link" href="/login">Iniciar sesi&oacute;n</a>
+            </div>
+
+            <!-- Botón crear art&iacute;culo -->
+            <div th:if="${autor}" class="ms-lg-2">
+                <a href="/crear-articulo" class="btn btn-outline-success nav-link">Crear art&iacute;culo</a>
+            </div>
+
+            <!-- Botón de usuario -->
+            <div th:if="${username} != null" class="ms-lg-2">
+                <div class="nav-item dropdown">
+                    <a th:text="${username}" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        ▼
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <a th:if="${admin}" class="dropdown-item" href="/crear-usuario">Registrar usuario</a>
+                        <a class="dropdown-item" href="/cerrar-sesion">Cerrar sesi&oacute;n</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4" style="background-color: #f8f9fa;">
+    <div class="row border p-4">
+        <!-- Sección de art&iacute;culos -->
+        <div class="col-md-9">
+            <!-- Ejemplo de un art&iacute;culo -->
+            <div th:if="${articulos.size()} == 0">
+                <h2 class="display-2 text-center">No existen art&iacute;culos</h2>
+                <h3 class="text-center lead mb-4">Te invitamos a crear el tuyo ;)</h3>
+            </div>
+            <th:block th:each=" i : ${#numbers.sequence(articulos.size()-1, 0, -1)}">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <a th:href="@{/articulo/{id} (id = ${articulos[i].id})}">
+                            <h2 class="card-title" th:text="${articulos[i].titulo}">T&iacute;tulo del Art&iacute;culo</h2>
+                        </a>
+                        <p class="card-text" th:text="${#strings.abbreviate(articulos[i].cuerpo,70)}">Descripci&oacute;n</p>
+                        <p class="card-text">
+                            <small class="text-muted">Etiquetas:
+                                <th:block th:each="etiqueta : ${articulos[i].getListaEtiquetas()}">
+                                <span class="badge bg-secondary" th:text="${etiqueta.getEtiqueta()}">Etiqueta</span>
+                                    <span th:if="${!etiquetaStat.last}">, </span>
+                                </th:block>
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+
+        <!-- Container de etiquetas-->
+        <div class="col-md-3 border p-3">
+            <h5 class="mb-3 text-center strong">Etiquetas</h5>
+            <h3 th:if="${etiquetas.size() == 0}" class="text-center lead mb-4">A&uacute;n no existen etiquetas</h3>
+            <th:block th:each="etiqueta : ${etiquetas}" class="text-center">
+                <button type="button" class="btn btn-secondary d-block mx-auto mb-2 etiqueta" th:text="${etiqueta.etiqueta}" th:attr="data-etiqueta=${etiqueta.etiqueta}">
+                    Etiqueta</button>
+            </th:block>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var etiquetas = $('.etiqueta');
+        etiquetas.on('click', function() {
+            var etiquetaSeleccionada = $(this).data('etiqueta');
+            if ($(this).hasClass('active')) {
+                $(this).removeClass('active');
+                mostrarTodosLosArticulos();
+            } else {
+                filtrarArticulosPorEtiqueta(etiquetaSeleccionada);
+                quitarActivos();
+                $(this).addClass('active');
+            }
+        });
+
+        function filtrarArticulosPorEtiqueta(etiqueta) {
+            $('.card').each(function() {
+                var $articulo = $(this);
+                var etiquetasArticulo = $articulo.find('.badge');
+                var mostrarArticulo = false;
+                etiquetasArticulo.each(function() {
+                    if ($(this).text() === etiqueta) {
+                        mostrarArticulo = true;
+                        return false;
+                    }
+                });
+                mostrarArticulo ? $articulo.show() : $articulo.hide();
+            });
+        }
+
+        function mostrarTodosLosArticulos() {
+            $('.card').show();
+        }
+
+        function quitarActivos() {
+            $('.etiqueta').removeClass('active');
+        }
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
