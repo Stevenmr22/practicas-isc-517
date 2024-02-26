@@ -1,1 +1,5 @@
 Contenido de practica-4
+
+VIDEO:
+
+https://cepucmmedu-my.sharepoint.com/:v:/g/personal/smmr0001_ce_pucmm_edu_do/Efrw6llcd15KgS17oO5SoisBojR4uaStgXC8IjWU_kO-2g?e=WIdg5M&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
