@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SkyShortener - Acortador de URLs</title>
+    <link rel="stylesheet" href="/vendors/feather/feather.css">
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="/js/select.dataTables.min.css">
+    <link rel="stylesheet" href="/css/vertical-layout-light/style.css">
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    <script src="js/urlPreviewer.js"></script>
+    <script src="serviceworkers.js"></script>
+</head>
+<body>
+<div class="container-scroller">
+
+    <div class="container-fluid page-body-wrapper">
+
+        <div th:insert="~{vistas/fragments.html :: navsidefragment}"></div>
+
+        <!--contenido-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+
+                <!--form acortador-->
+                <div class="row">
+                    <div class="col-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="font-weight-bold mb-4" style="text-transform: none;">Acorta un enlace</h3>
+                                <div th:if="${error}" class="alert alert-warning mb-3" role="alert">
+                                    La URL introducida no es v&aacute;lida.
+                                </div>
+                                <form class="forms-sample" method="post" action="/acortar">
+                                    <div class="form-group">
+                                        <label for="url-titulo" class="">T&iacute;tulo de la URL</label>
+                                        <input type="text" class="form-control" id="url-titulo" name="titulo" placeholder="T&iacute;tulo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="url-larga" class="">Introduce una URL larga</label>
+                                        <input type="text" class="form-control" id="url-larga" name="url" placeholder="URL" required>
+                                    </div>
+                                    <div id="image-wrapper" class="">
+                                        <label for="myimg" class="font-weight-bold">Vista previa de la URL</label>
+                                        <img src="images/placeholder.jpg" id="myimg" class="img-fluid mt-1 rounded" width="360" height="359">
+                                    </div>
+                                    <div class="mt-3 d-flex flex-column align-items-center justify-content-center">
+                                        <button type="submit" class="btn btn-md btn-primary btn-icon-text mt-3 font-weight-bold">
+                                            <i class="ti-link btn-icon-prepend"></i>
+                                            Acortar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--form acortador-->
+
+            </div>
+        </div>
+        <!--contenido-->
+    </div>
+</div>
+
+<script src="vendors/js/vendor.bundle.base.js"></script>
+<script src="vendors/chart.js/Chart.min.js"></script>
+<script src="vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="js/dataTables.select.min.js"></script>
+
+<script src="js/off-canvas.js"></script>
+<script src="js/hoverable-collapse.js"></script>
+<script src="js/template.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/todolist.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/Chart.roundedBarCharts.js"></script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/serviceworkers.js', { scope: '/' }).then(function(registration) {
+                // Notificando el registro del service workwe
+                console.log('Registrando el servicio en el ambiente: ', registration.scope);
+            }, function(err) {
+                console.log('Service Worker falló el registro: ', err);
+            });
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('#url-larga').on('input', function(){
+            let url = $('#url-larga').val();
+            if(url.length > 0 && checkUrl(url)){
+                loadImage(url, $('#myimg')[0]).then(() => { // url y DOM element
+                    $('#image-wrapper').css('display', 'flex');
+                    setTimeout(function () {
+                        $('#image-wrapper').css('opacity', '1');
+                    }, 50);
+                });
+            }
+            else if(url.length === 0 || !checkUrl(url)){
+                $('#image-wrapper').css('opacity', '0');
+                setTimeout(function() {
+                    $('#image-wrapper').css('display', 'none');
+                }, 500);
+            }
+        });
+    })
+</script>
+<!-- Optimizar esto -->
+<script th:if="${usuario == null}" src="js/cash.js"></script>
+<script>
+
+</script>
+</body>
+</html>
+

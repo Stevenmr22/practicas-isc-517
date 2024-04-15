@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SkyShortener - Listado de enlaces</title>
+    <link rel="stylesheet" href="/vendors/feather/feather.css">
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="/js/select.dataTables.min.css">
+    <link rel="stylesheet" href="/css/vertical-layout-light/style.css">
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.10.7/dist/sweetalert2.min.css " rel="stylesheet">
+</head>
+<body>
+
+<!--sweet alerts para verificar si se eliminó correctamente-->
+<script th:if="${deleted}"> Swal.fire({ title: "URL eliminada correctamente", text: "Presiona OK para continuar", icon: "success" }); </script>
+<script th:if="${!deleted} AND ${deleted != null}"> Swal.fire({ title: "Ocurri&oacute; un error al eliminar", text: "Presiona OK para continuar", icon: "error" }); </script>
+<!--sweet alerts -->
+
+<!-- Optimizar esto -->
+<script th:if="${usuario == null}" src="js/cash.js"></script>
+
+<div class="container-scroller">
+
+    <div class="container-fluid page-body-wrapper">
+
+        <div th:insert="~{vistas/fragments.html :: navsidefragment}"></div>
+
+        <!--contenido-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <h2 class="font-weight-bold  mt-3"> URLs acortadas</h2>
+                <hr class="my-4">
+
+                <!-- fila url -->
+                <div th:each="url: ${urls}" class="row">
+                    <div class="col-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="font-weight-bold mb-4 text-truncate"
+                                    style="text-transform: none; max-width: 700px;" id="test" th:text="${url.titulo}">
+                                    Introduction to Morphia – Java ODM for MongoDB
+                                </h3>
+                                <div class="mb-2"> <!-- ARREGLAR buscar una forma de que tenga el nombre de la pagina -->
+                                    <a th:href="@{'r/' + ${url.id}}" class="font-weight-bold" th:text="@{'https://sh.stevenapp.me/r/' + ${url.id}}" target="_blank">
+                                        https://bit.ly/49xM8E9
+                                    </a>
+                                </div>
+
+                                <div class="mb-4">
+                                    <a th:href="${url.urlOriginal}" class="text-reset" th:text="${url.urlOriginal}" target="_blank">
+                                        https://www.baeldung.com/mongodb-morphia
+                                    </a>
+                                </div>
+
+                                <!-- botones -->
+                                <div class="d-flex">
+                                    <div class="mt-2">
+                                        <a class="btn btn-sm btn-outline-primary btn-icon-text" th:href="@{'/ver-url/' + ${url.id}}">
+                                            <i class="ti-info-alt btn-icon-prepend"></i>
+                                            M&aacute;s informaci&oacute;n
+                                        </a>
+                                    </div>
+                                    <div th:if="${isAdmin}" class="mt-2 ml-3">
+                                        <a class="btn btn-sm btn-outline-danger btn-icon-text"
+                                           th:attr="data-titulo='/eliminar-url/'+${url.id}" onclick="sendDelete(this.getAttribute('data-titulo'))">
+                                            <i class="ti-trash btn-icon-prepend"></i>
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- botones -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- fila url-->
+
+            </div>
+        </div>
+        <!--contenido-->
+    </div>
+</div>
+<script src="vendors/js/vendor.bundle.base.js"></script>
+<script src="vendors/chart.js/Chart.min.js"></script>
+<script src="vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="js/dataTables.select.min.js"></script>
+
+<script src="js/off-canvas.js"></script>
+<script src="js/hoverable-collapse.js"></script>
+<script src="js/template.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/todolist.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/Chart.roundedBarCharts.js"></script>
+
+<!--script DELETE-->
+<script th:inline="javascript">
+    function sendDelete(url) {
+        console.log(url);
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("DELETE", url, true);
+        xhttp.onload = function () {
+            let responseURL = xhttp.responseURL;
+            window.location.replace(responseURL);
+        };
+        xhttp.send();
+    }
+</script>
+
+</body>
+
+</html>
+

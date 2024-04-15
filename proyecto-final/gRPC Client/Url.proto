@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package urlrn;
+
+message urlRequest {
+  string username = 1;
+}
+
+message urlResponse{
+  string id = 1;
+  string urlOriginal = 2;
+  string titulo = 3;
+  string usernameCreador = 4;
+  google.protobuf.Timestamp fechaCreacion = 5;
+}
+
+message listadoUrls{
+  repeated urlResponse urls = 1;
+}
+
+service UrlService{
+  rpc obtenerUrls(urlRequest) returns (listadoUrls);
+  rpc crearUrl(urlResponse) returns (urlResponse);
+}

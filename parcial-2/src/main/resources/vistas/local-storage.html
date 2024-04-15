@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        if(localStorage.getItem('username') == null){
+            const username = document.getElementById('username').value;
+            localStorage.setItem('username', username);
+            window.location.href = "/";
+        }else{
+            localStorage.removeItem('username');
+            window.location.href = "/login";
+        }
+    </script>
+</body>
+</html>

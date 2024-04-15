@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>SkyShortener - Listado de usuarios</title>
+  <link rel="stylesheet" href="/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/css" href="/js/select.dataTables.min.css">
+  <link rel="stylesheet" href="/css/vertical-layout-light/style.css">
+  <link rel="shortcut icon" href="/images/favicon.png"/>
+</head>
+<body>
+<div class="container-scroller">
+
+  <div class="container-fluid page-body-wrapper">
+
+    <div th:insert="~{vistas/fragments.html :: navsidefragment}"></div>
+
+    <!--contenido-->
+    <div class="main-panel">
+      <div class="content-wrapper">
+
+        <!--form acortador-->
+        <div class="row">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body text-center">
+                <h4 class="card-title">Listado de usuario</h4>
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Username</th>
+                      <th>Nombre</th>
+                      <th>Nivel de Usuario</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="usuario : ${usuarios}">
+                      <td th:text="${usuario.username}"></td>
+                      <td th:text="${usuario.nombre}"></td>
+                      <td th:if="${usuario.admin}">Administrador</td>
+                      <td th:unless="${usuario.admin}">Usuario</td>
+                      <td th:if="${usuario.activo}">Activo</td>
+                      <td th:unless="${usuario.activo}">Inactivo</td>
+                      <td th:if="${usuario.admin and usuario.username !='admin'}">
+                        <form action="/quitar-admin" method="POST">
+                          <input type="hidden" name="username" th:value="${usuario.username}">
+                          <button type="submit" class="btn btn-danger">
+                            <i class="mdi mdi-led-variant-off"> </i>User
+                          </button>
+                        </form>
+                      </td>
+                      <td th:unless="${usuario.admin}">
+                        <form action="/hacer-admin" method="POST">
+                          <input type="hidden" name="username" th:value="${usuario.username}">
+                          <button type="submit" class="btn btn-success">
+                            <i class="mdi mdi-crown"> </i> Admin
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--form acortador-->
+
+      </div>
+    </div>
+    <!--contenido-->
+  </div>
+</div>
+</div>
+<script src="vendors/js/vendor.bundle.base.js"></script>
+<script src="vendors/chart.js/Chart.min.js"></script>
+<script src="vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="js/dataTables.select.min.js"></script>
+
+<script src="js/off-canvas.js"></script>
+<script src="js/hoverable-collapse.js"></script>
+<script src="js/template.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/todolist.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/Chart.roundedBarCharts.js"></script>
+
+</body>
+
+</html>
+

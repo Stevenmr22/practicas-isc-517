@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SkyShortener - Acortador de URLs</title>
+    <link rel="stylesheet" href="/vendors/feather/feather.css">
+    <script src="/js/qrcode.js"></script>
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="/js/select.dataTables.min.css">
+    <link rel="stylesheet" href="/css/vertical-layout-light/style.css">
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+</head>
+<body>
+<div class="container-scroller">
+
+    <div class="container-fluid page-body-wrapper">
+
+        <div th:insert="~{vistas/fragments.html :: navsidefragment}"></div>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <!-- Fila para la información del URL -->
+                <div class="row">
+                    <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h3>Informaci&oacute;n del URL</h3>
+                                <br>
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th>ID</th>
+                                        <td th:text="${url.id}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>URL Original</th>
+                                        <td th:text="${url.urlOriginal}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>T&iacute;tulo</th>
+                                        <td th:text="${url.titulo}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Creador</th>
+                                        <td th:text="${url.usernameCreador}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>Gr&aacute;fico Fecha-Hora</h3>
+                                <br>
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>C&oacute;digo QR</h3>
+                                <br>
+                                <button id="copy-btn" class="btn btn-primary">Descargar QR</button>
+                                <br>
+                                <br>
+                                <div id="qrcode" class="d-flex justify-content-center" th:attr="data-url=${url.id}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>Sistemas Operativos</h3>
+                                <br>
+                                <canvas id="doughnutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>Origen de Navegaci&oacute;n</h3>
+                                <br>
+                                <canvas id="browserDoughnutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    const id = document.getElementById("qrcode").dataset.url;
+    const urlAcortada = location.origin + "/r/" + id;
+
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: urlAcortada,
+        width: 350,
+        height: 350,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var accessHours = /*[[${accessHours}]]*/ 'default';
+    var accessCounts = /*[[${accessCounts}]]*/ 'default';
+    var accessOS = /*[[${sistemaOperativo}]]*/ 'default';
+    var browser = /*[[${browser}]]*/ 'default';
+    /*]]>*/
+</script>
+<script type="text/javascript">
+    document.getElementById('copy-btn').addEventListener('click', function() {
+        const canvas = document.querySelector('#qrcode canvas');
+        const img = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        const link = document.createElement('a');
+        link.download = 'qrcode.png';
+        link.href = img;
+        link.click();
+    });
+</script>
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="/vendors/chart.js/Chart.min.js"></script>
+<script src="/vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="/js/dataTables.select.min.js"></script>
+<script src="/js/off-canvas.js"></script>
+<script src="/js/hoverable-collapse.js"></script>
+<script src="/js/template.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<script src="/js/dashboard.js"></script>
+<script src="/js/Chart.roundedBarCharts.js"></script>
+<script src="/js/chart.js"></script>
+</body>
+
+</html>
+
