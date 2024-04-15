@@ -1,0 +1,59 @@
+<div class="container mt-4" style="background-color: #f8f9fa;">
+    <div class="row border p-4">
+        <!-- Sección de art&iacute;culos -->
+        <div class="col-md-9">
+            <!-- Ejemplo de un art&iacute;culo -->
+            <div th:if="${articulos.size()} == 0">
+                <h2 class="display-2 text-center">No existen art&iacute;culos</h2>
+                <h3 class="text-center lead mb-4">Te invitamos a crear el tuyo ;)</h3>
+            </div>
+            <th:block th:each="articulo : ${articulos}">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <a th:href="@{/articulo/{id}(id=${articulo.id})}">
+                            <h2 class="card-title" th:text="${articulo.titulo}">T&iacute;tulo del Art&iacute;culo</h2>
+                        </a>
+                        <p class="card-text" th:text="${#strings.abbreviate(articulo.cuerpo, 70)}">Descripci&oacute;n</p>
+                        <p class="card-text">
+                            <small class="text-muted">Etiquetas:
+                                <span th:each="etiqueta, etiquetaStat : ${articulo.listaEtiquetas}">
+                                    <span class="badge bg-secondary" th:text="${etiqueta.etiqueta}">Etiqueta</span>
+                                    <span th:if="${!etiquetaStat.last}">, </span>
+                                    </span>
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+
+        <!-- Container de etiquetas-->
+        <div class="col-md-3 border p-3">
+            <h5 class="mb-3 text-center strong">Etiquetas</h5>
+            <h3 th:if="${etiquetas.size() == 0}" class="text-center lead mb-4">A&uacute;n no existen etiquetas</h3>
+            <th:block th:each="etiqueta : ${etiquetas}" class="text-center">
+                <a th:if="${etiquetaSeleccionada != null && etiqueta.etiqueta == etiquetaSeleccionada.etiqueta}"
+                   type="button" th:href="@{'/?paginaActual=1'}" class="btn btn-primary d-block mx-auto mb-2 update-wrapper etiqueta"
+                   th:text="${etiqueta.etiqueta}">Etiqueta</a>
+                <a th:if="${etiquetaSeleccionada == null || etiqueta.etiqueta != etiquetaSeleccionada.etiqueta}" type="button" th:href="@{'/?paginaActual=1&etiqueta=' + ${etiqueta.etiqueta}}"
+                   class="btn btn-secondary d-block mx-auto mb-2 update-wrapper etiqueta" th:text="${etiqueta.etiqueta}">Etiqueta</a>
+            </th:block>
+        </div>
+    </div>
+</div>
+
+<nav aria-label="Page navigation example" th:if="${articulos.size()} > 0">
+    <ul class="pagination justify-content-center p-5">
+        <li class="page-item">
+            <a th:if="${etiquetaSeleccionada} != null" class="update-wrapper page-link" th:href="@{'/?paginaActual=' + ${paginaActual - 1} + '&etiqueta=' + ${etiquetaSeleccionada.etiqueta}}">&laquo; Anterior</a>
+            <a th:if="${etiquetaSeleccionada} == null" class="update-wrapper page-link" th:href="@{'/?paginaActual=' + ${paginaActual - 1}}">&laquo; Anterior</a>
+        </li>
+        <li class="p-2"><p class="text-muted" th:text="${paginaActual}"></p></li>
+        <li class="p-2"><p class="text-muted">/</p></li>
+        <li class="p-2"><p class="text-muted" th:text="${numeroPaginas}"></p></li>
+        <li class="page-item">
+            <a th:if="${etiquetaSeleccionada} != null" class="update-wrapper page-link" th:href="@{'/?paginaActual=' + ${paginaActual + 1} + '&etiqueta=' + ${etiquetaSeleccionada.etiqueta}}">Siguiente &raquo;</a>
+            <a th:if="${etiquetaSeleccionada} == null" class="update-wrapper page-link" th:href="@{'/?paginaActual=' + ${paginaActual + 1}}">Siguiente &raquo;</a>
+        </li>
+    </ul>
+</nav>
